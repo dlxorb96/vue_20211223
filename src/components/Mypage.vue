@@ -30,7 +30,7 @@
             'comp-3' : Comp3
         },
         created(){
-            this.changeLogged1()
+            // this.changeLogged1()
         },
         data(){
             return{
@@ -46,7 +46,7 @@
         methods:{
             changeLogged1(){
                 console.log('Mypage.vue => changeLogged1')
-                this.$emit('changeLogged')
+                // this.$emit('changeLogged')
             }
             // changeComp(no){
             //     this.currentComp = no

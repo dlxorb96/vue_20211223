@@ -32,11 +32,11 @@
             </el-form>
         </el-card>
 
-
     </div>
 </template>
 
 <script>
+    import {useStore} from 'vuex';
     export default {
         data(){
             return{
@@ -44,7 +44,9 @@
                     userid: '',
                     userpw: '',
                     token : '', //로그인시에 발행되는 인증키
-                }
+                    
+                },
+                store: useStore()
             }
         },
         methods:{
@@ -54,13 +56,15 @@
                 sessionStorage.setItem("TOKEN", this.token)
                 alert('로그인 되었습니다.');
                 //부모컴포넌트로 이벤트를 발생시킴(이벤트명은 changeLogged)
-                this.$emit('changeLogged')
-                this.$router.push({name:'Home'})
-                
+                // (이벤트명은 changeLogged 파라미터는 home)
+                // this.$emit('changeLogged', 'home')
+                // this.$router.push({name:'Home'})
+                this.store.commit('setMenu', 'home')
             },
             handleJoin(){
-                this.$emit('changeLogged')
-                this.$router.push({name:'Join'})
+                this.store.commit('setMenu', 'home')
+                // this.$emit('changeLogged', 'home')
+                // this.$router.push({name:'Join'})
 
             }
         }
