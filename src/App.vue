@@ -88,7 +88,11 @@ export default {
       // this.$refs["path"].click(); 이랑 같음   
       // .path를 하면 파라미터로 넘어온 path가 아니라 위에 존재하는 path를 찾는다
       
-      this.$refs[path].$el.click();
+      // this.$refs[path].$el.click();
+
+      if(typeof this.$refs[path] !== 'undefined'){
+        this.$refs[path].$el.click();
+      }
     },
   },
 };

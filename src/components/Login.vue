@@ -62,7 +62,7 @@
                 this.store.commit('setMenu', 'home')
             },
             handleJoin(){
-                this.store.commit('setMenu', 'home')
+                this.store.commit('setMenu', 'Join')
                 // this.$emit('changeLogged', 'home')
                 // this.$router.push({name:'Join'})
 
