@@ -73,12 +73,12 @@ export default {
             
         },
         mounted(){
-            // this.handleData2()
         },
         data(){
             return{
                 items : [],
                 no: Number(this.$route.query.no),
+                cno: Number(this.$route.query.no),
                 // bno : Number(this.$route.query.bno)
                 dialogVisible : false,
                 dialogVisible2 : false,
@@ -91,28 +91,49 @@ export default {
         },
         methods:{
             async handleLeft(){
-                const url = `/board/selectone?no=${this.no - 1}`;
+                console.log(this.no)
+                const url = `/board/prevno?cno=${this.no}`;
                 const headers = {"Content-Type" : "application/json"}
-                const response = await this.axios.get(url,{headers: headers})
-                console.log(response)
+                const response = await this.axios.get(url, {headers: headers})
+                if(response.data.no === 0){
+                        alert('이전 글이 없습니다.')
+                        return;
+                }
                 if(response.data.status ===200){
-                    this.items = response.data.result
-                    this.no--
+                    console.log("boardone.vue => handleLeft", response)
+                    this.no = Number(response.data.no)
+                    await this.updatehit()
+                    this.$router.push({
+                        name:'BoardOne',
+                        query:{ no:this.no, bno:1 ,}
+                    })
                     this.handleData()
                     
                 }
             },
+
             async handleRight(){  
-                const url = `/board/selectone?no=${this.no + 1}`;
+                console.log(this.no)
+                const url = `/board/nextno?cno=${this.no}`;
                 const headers = {"Content-Type" : "application/json"}
-                const response = await this.axios.get(url,{headers: headers})
-                console.log(response)
-                if(response.data.status ===200){
-                    this.items = response.data.result
-                    this.no++
-                    this.handleData()
+                const response = await this.axios.get(url, {headers: headers})
+                if(response.data.no === 0){
+                        alert('마지막 글입니다.')
+                        return;
                 }
+                if(response.data.status ===200){
+                    console.log("boardone.vue => handleLeft", response)
+                    this.no = Number(response.data.no)
+                    await this.updatehit()
+                    this.$router.push({
+                        name:'BoardOne',
+                        query:{ no:this.no,
+                         bno :1 }
+                    })
+                    this.handleData()
+                }  
             },
+
             async deleteOne(){
                 const url = `/board/delete?no=${this.no}`;
                 const headers = {"Content-Type" : "application/json"}
@@ -120,8 +141,8 @@ export default {
                     url, {headers:headers, data:{'no': this.items.no}})
                     console.log(this.no)
                 if(response.data.status === 200){
+                    alert('삭제 되었습니다')
                     this.$router.push({name:"Board"})
-
                 }
                 this.dialogVisible = false
 
@@ -140,11 +161,13 @@ export default {
                 const response = await this.axios.put(url, body, {headers: headers});
                 console.log(response);
                 if(response.data.status === 200){
+                    alert("수정되었습니다")
                     this.items = response.data.result
+                    this.dialogVisible = false
+                    // this.handleData()
+
                 }
 
-                this.dialogVisible = false
-                // this.handleData()
             },
             
             async handleData(){
@@ -158,12 +181,20 @@ export default {
                 console.log(this.items)
             },
 
-            // async hadleData2(){
-            //     const url = `board/updatehit?no=${this.items._id}`
-            //     const headers = {"content-Type" : "application/json"};
-            //     const response = await this.axios.get(url,{headers: headers})
-            //     console.log(response)
-            // }
+            async updatehit(){
+                const url = `/board/updatehit?no=${this.no}`
+                const headers = {"Content-Type": "application/json"};
+                const response = await this.axios.put(
+                    url,
+                    {},
+                    {headers:headers}
+                );
+                if(response.status ===200){
+                    console.log('BoardOne.vue > updatehit, 조회수 1올리기 성공' , response.data)
+                }
+                
+            }
+                
         }
     }
 </script>

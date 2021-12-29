@@ -21,7 +21,7 @@ import {useStore} from 'vuex';
     export default {
         created(){
             this.handleData2()
-        },    
+        },
         data(){
             return{
                 items : [],
