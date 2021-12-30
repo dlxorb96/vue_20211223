@@ -7,6 +7,11 @@ module.exports = {
                 target:'http://localhost:3000',
                 changeOrigin :true,
                 logLevel : 'debug'
+            },
+            '/item' : {
+                target:'http://localhost:3000',
+                changeOrigin :true,
+                logLevel : 'debug'
             }
         }
     }

@@ -12,6 +12,9 @@ import Admin from '@/components/Admin.vue'
 import Board from '@/components/Board.vue'
 import BoardOne from '@/components/BoardOne.vue'
 import BoardWrite from '@/components/BoardWrite.vue'
+import Seller from '@/components/Seller.vue'
+import ItemInsert from '@/components/ItemInsert.vue'
+import ItemContent from '@/components/ItemContent.vue'
 
 // URL과 컴포넌트의 연결
 const routes = [
@@ -27,6 +30,9 @@ const routes = [
     {path: '/board', name: 'Board', component: Board},
     {path: '/boardOne', name: 'BoardOne', component: BoardOne},
     {path: '/boardWrite', name: 'BoardWrite', component: BoardWrite},
+    {path: '/seller', name: 'Seller', component: Seller},
+    {path: '/itemInsert', name: 'ItemInsert', component: ItemInsert},
+    {path: '/itemContent', name: 'ItemContent', component: ItemContent},
 ]
 
 // 실제 라우트 적용
