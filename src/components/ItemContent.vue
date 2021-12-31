@@ -33,6 +33,7 @@
     export default {
         created(){
             this.handleData()
+            console.log(this.code)
             
         },
         methods:{
