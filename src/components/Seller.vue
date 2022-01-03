@@ -14,6 +14,9 @@
       <el-button type="danger" style="margin-left : 10px" size="small" @click="deleteSomeItem">
           물품일괄삭제  
       </el-button>
+      <el-button type="info" style="margin-left : 10px" size="small" @click="editSomeItem">
+          물품일괄수정  
+      </el-button>
 
      {{items}}
         
@@ -22,7 +25,8 @@
 
        <el-table-column label="선택" width="50">
         <template #default="scope">
-          <el-checkbox v-model="scope.row.chk" @change="clickChk(scope.row)"  size="large"></el-checkbox>
+          <!-- <el-checkbox v-model="scope.row.chk" @change="clickChk(scope.row)"  size="large"></el-checkbox> -->
+          <el-checkbox v-model="items[scope.$index].chk" @change="clickChk(scope.row)"  size="large"></el-checkbox>
         </template>
        </el-table-column>
 
@@ -30,6 +34,7 @@
             <template #default="scope">
                 <div @click="rowClick(scope)" style="cursor:pointer;">
                     {{scope.$index+1}}
+                    
                 </div>
             </template>
         </el-table-column>    
@@ -140,31 +145,59 @@ export default {
     };
   },
   methods: {
-    async deleteSomeItem(){
-      const url = '/item/deletebatch';
-      const headers = {"Content-Type" : "application/json"};
-      const body = []
-      for(let i =0; i < this.items.length; i++){
-        if(this.items[i].chk){
-        body.push(this.items[i])
-        }
-      }
-      console.log("Seller.vue => deleteSomeItem()" , body)
-      const response = await this.axios.delete(url, {
-      headers : headers,
-      data    : body
-      });
-      console.log("Seller.vue => deleteSomeItem()" , response);
-      if(response.data.status ===200){
-        await this.handleData();
+    async editSomeItem(){
 
-        // for(let i =0; i < this.items.length; i++){
-        //   this.items[i].chk = false
-        //   console.log(123)
-        // }
         
-      }
+      
+      console.log("Seller.vue => editSomeItem()")
+      // const url = '/item/selectCheck';
+      const body = [];
+      for(let i =0; i < this.items.length; i++){
+          if(this.items[i].chk){
+          body.push({code : this.items[i]._id})
+          }
+        }
+      // const response = await this.axios.post(url, body, 
+      // {headers: headers});
+      // console.log("Seller.vue => editSomeItem()", response)
+      // if(response.result.status === 200){
+        // 주의 arr변수는 object를 string으로 변환해서 전송
+        this.$router.push({name: 'ItemUpdateBatch',
+        params : {code: JSON.stringify(body)} })
+      // }
+    },
 
+    async deleteSomeItem(){
+      const ret = confirm('삭제할까요?');
+      if(ret){
+        const url = '/item/deletebatch';
+        const headers = {"Content-Type" : "application/json"};
+        const body = []
+        for(let i =0; i < this.items.length; i++){
+          if(this.items[i].chk){
+          body.push(this.items[i])
+          }
+        }
+        console.log(body)
+
+        console.log("Seller.vue => deleteSomeItem()" , body)
+        const response = await this.axios.delete(url, {
+        headers : headers,
+        data    : body
+        });
+        console.log("Seller.vue => deleteSomeItem()" , response);
+        if(response.data.status ===200){
+          alert('삭제완료 되었습니다')
+          this.handleData();
+          // for(let i =0; i < this.items.length; i++){
+          //   this.items[i].chk = false
+          //   console.log(123)
+          // }
+          
+        }
+
+      }
+      
     }
     ,
     clickChk(row){
@@ -245,6 +278,9 @@ export default {
         for(let i =0; i < this.items.length; i++){
           this.items[i].chk = false
         }
+        // for(let tmp of this.items){
+        //   tmp.chk = false
+        // }
         
       }
       // console.log(response)

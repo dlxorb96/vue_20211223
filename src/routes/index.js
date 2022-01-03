@@ -16,6 +16,7 @@ import Seller from '@/components/Seller.vue'
 import ItemInsert from '@/components/ItemInsert.vue'
 import ItemContent from '@/components/ItemContent.vue'
 import ItemInsertBatch from '@/components/ItemInsertBatch.vue'
+import ItemUpdateBatch from '@/components/ItemUpdateBatch.vue'
 
 // URL과 컴포넌트의 연결
 const routes = [
@@ -35,6 +36,7 @@ const routes = [
     {path: '/itemInsert', name: 'ItemInsert', component: ItemInsert},
     {path: '/itemContent', name: 'ItemContent', component: ItemContent},
     {path: '/itemInsertBatch', name: 'ItemInsertBatch', component: ItemInsertBatch},
+    {path: '/itemUpdateBatch', name: 'ItemUpdateBatch', component: ItemUpdateBatch},
 ]
 
 // 실제 라우트 적용

@@ -1,14 +1,9 @@
 <template>
     <div>
-        <h4>ItemInsertBatch.vue</h4>
-        <el-button type="info" @click="handlePlus" size="small">
-              항목추가
-        </el-button>
-        <el-button type="info" @click="handleMinus" size="small">
-              항목삭제
-        </el-button>
+        {{code}}
+        <h4>ItemUpdateBatch.vue</h4>
         <el-button type="primary" @click="insertDB" size="small">
-              일괄추가
+              일괄수정
         </el-button>
         <el-button type="primary" @click="toSeller" size="small">
               목록으로
@@ -43,10 +38,9 @@
                 <el-input size="mini" v-model="items[scope.$index].quantity" />
             </template>
         </el-table-column>
-        <el-table-column prop="img" label="이미지" width="250">
+        <el-table-column prop="image" label="이미지" width="250">
             <template #default="scope">
                 <img :src="this.items[scope.$index].imgurl" style="width: 50px">
-                <!-- <img src="#" style="width: 100px;"> -->
                 <input type="file" @change="hadleImage($event, scope.$index )" />
             </template>
         </el-table-column>
@@ -58,66 +52,82 @@
 <script>
     export default {
         created(){
-
+            
+            
         },
-        data(){
-            return{
 
-                items : [
-                    {name: 'a', content : '1', price: 1, quantity: 1, img:'', imgurl: require('../assets/logo.png')},
-                    {name: 'a', content : '1', price: 1, quantity: 1, img:'', imgurl: require('../assets/logo.png')},
-                    {name: 'a', content : '1', price: 1, quantity: 1, img:'', imgurl: require('../assets/logo.png')},
-                    ]
+        mounted(){
+            // F5 새로고침 처리
+            console.log(this.code)
+            if(typeof this.code === 'undefined'){
+                this.$router.back();
+            }
+            else{
+                this.handleData();
             }
         },
+        
+        data(){
+            return{
+                // JSON.parse(안에는 데이터가 무조건 있어야함)
+                code : this.$route.params.code,
+                items : []
+            }
+        },
+
         methods:{
-            handlePlus(){
-                this.items.push({name: 'a', content : '1', price: 1, quantity: 1, img:''});
-            },
-            handleMinus(){
-                this.items.pop();
-            },
-            hadleImage(e, idx){
-                console.log("ItemInsertBatch.vue => handleImage" ,e, idx)
-                
-                if(e.target.files.length > 0){
-                    this.items[idx].img = e.target.files[0];
-                    this.items[idx].imgurl = URL.createObjectURL(e.target.files[0]);
-                }
-                else{
-                    this.items[idx].img = null
-                    this.items[idx].imgurl = require('../assets/logo.png');
-                }
+            hadleImage(e, i){
+                console.log("itemUpdateBatch.vue = > handleImage", e, i)
+                this.items[i].image = e.target.files[0]
             },
 
             async insertDB(){
-                console.log(" ItemInsertBatch=> insertDB",this.items.img)
-                const url = '/item/insertbatch';
-                const headers = { "Content-Type": "multipart/form-data" };
+                const url = 'item/updatebatch';
                 const body = new FormData();
-                for(let i = 0; i < this.items.length; i++){
+                for(let i = 0; this.items.length > i; i++){
+                    body.append("code", this.items[i]._id)
                     body.append("name", this.items[i].name)
                     body.append("content", this.items[i].content)
                     body.append("price", this.items[i].price)
                     body.append("quantity", this.items[i].quantity)
                     body.append("file", this.items[i].img)
-                   
-                }
-                const response = await this.axios.post(
-                    url, body, {headers:headers})
-                if(response.data.status ===200){
-                    alert('일괄추가 되었습니다.')
-                    this.$router.push({name: 'Seller'})
-                console.log(response)
                 }
                 
+                const headers = {"content-Type": "multipart/form-data"};
+                const response = await this.axios.put(
+                    url, body, {headers : headers}
+                )
+                if(response.data.status ===200){
+                    alert('수정 완료되었습니다.')
+                    this.$router.push({name: 'Seller'})
+                }
+                console.log(response)
+            },
 
+            async handleData(){
+                // string -> object로 변환
+                this.code = JSON.parse(this.code)
+                const url = '/item/selectCheck';
+                const headers = { "Content-Type" : "application/json" }
+                //[{code:1}, {code:2}] => [1,2]
+                let arr = [];
+                for(let tmp of this.code){
+                    arr.push(tmp.code)
+                }
+                const body = { chks : arr};
+                const response = await this.axios.post(url, body, 
+                {headers: headers});
+
+           
+                console.log("Seller.vue => editSomeItem()", response)
+                if(response.data.status === 200){
+                    this.items = response.data.result                
+                }
             },
             toSeller(){
-
+                this.$router.push( {name: 'Seller'} )
             }
-        },
-
+        }
     }
 </script>
 
