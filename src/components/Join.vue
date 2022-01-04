@@ -82,9 +82,9 @@
                 </el-form-item>
 
                 <el-form-item label="성별">
-                    <el-radio-group v-model= "member.sex" ><!-- ref="sex" -->
-                        <el-radio label="남자"></el-radio>
-                        <el-radio label="여자"></el-radio>
+                    <el-radio-group v-model= "member.gender" ><!-- ref="gender" -->
+                        <el-radio label="1">남자</el-radio>
+                        <el-radio label="2">여자</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
@@ -109,6 +109,7 @@
 
 <script>
     export default {
+        
         data(){
             return{
                 member: {
@@ -119,8 +120,9 @@
                     date : '1',
                     email : '1',
                     email2 : '1',
+                    email3 : '',
                     type : ['Html'],
-                    sex : '남자',
+                    gender : '2',
                     desc : '1',
                     chk : '',
                 },
@@ -129,21 +131,9 @@
             }
         },
         methods:{
-            join(){
+            async join(){
 
-                // const url = '/api/join';
-                // const headers = {"Content-Type":"application/json"}
-                // const body = {
-                //     userid : this.userid,
-                //     userpw : this.userpw,
-                //     useremail : this.usermail + "@" + this.usermail
-                // }
-                // const response = this.axios.post(url, body, {headers : headers})
-                // console.log(response)
-                // if(response.data.ret === 'y'){
-                //     alert('회원가입되었습니다.');
-                //     this.$router.push({name: 'Home'})
-                // }
+            
 
                 if(this.member.userid ===''){
                     alert('아이디를 입력해주세요')
@@ -184,7 +174,7 @@
                     alert('관심분야를 클릭해주세요')
                     return false;
                 }
-                if(this.member.sex ===''){
+                if(this.member.gender ===''){
                     alert('성별를 입력해주세요')
                     return false;
                 }
@@ -192,12 +182,39 @@
                     alert('약관에 동의해주세요')
                     return false;
                 }
-                alert('환영합니다')
-                this.$router.push({
-                    name:'Home'
+                
+                // this.$router.push({
+                //     name:'Home'
                     
-                })
+                // })
                 sessionStorage.setItem("activeIndex", 1);
+                this.aa()
+
+            },
+            async aa(){
+                const url = '/member/insert';
+                const headers = {"Content-Type" : "application/json"}
+                
+                const body = {
+                    uid: this.member.userid,
+                    upw: this.member.uesrpw,
+                    ubirth: this.member.date,
+                    uemail: String(this.member.email)+ '@' + String(this.member.email2),
+                    ucheck: this.member.chk,
+                    ugender: this.member.gender,
+                };
+                
+                const response = await this.axios.post(
+                    url, body, {headers: headers}
+                );
+                if(response.status === 200){
+                    console.log("success")
+                }
+                if(response.stauts ===0){
+                    alert('다시 확인')
+                }
+                console.log(response)
+                alert('환영합니다')
             },
 
 

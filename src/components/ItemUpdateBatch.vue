@@ -10,37 +10,37 @@
         </el-button>
 {{items}}
         <el-table :data="items" style="width: 100%; size: mini;"> 
-        <el-table-column prop="_id" label="아이디" width="100">
+        <el-table-column  label="아이디" width="100">
             <template #default="scope">
                 {{scope.$index +1}}
             </template>
         </el-table-column>
 
-        <el-table-column prop="name" label="물품명" width="120">
+        <el-table-column label="물품명" width="120">
             <template #default="scope">
                 <el-input size="mini" v-model="items[scope.$index].name" />
             </template>
         </el-table-column>
 
-        <el-table-column prop="content" label="글 내용" width="300">
+        <el-table-column label="글 내용" width="300">
             <template #default="scope">
                 <el-input size="mini" v-model="items[scope.$index].content" />
             </template>
         </el-table-column>
 
-        <el-table-column prop="price" label="가격" width="120">
+        <el-table-column label="가격" width="120">
             <template #default="scope">
                 <el-input size="mini" v-model="items[scope.$index].price" />
             </template>
         </el-table-column>
-        <el-table-column prop="quantity" label="수량" width="120">
+        <el-table-column  label="수량" width="120">
             <template #default="scope">
                 <el-input size="mini" v-model="items[scope.$index].quantity" />
             </template>
         </el-table-column>
-        <el-table-column prop="image" label="이미지" width="250">
+        <el-table-column  label="이미지" width="250">
             <template #default="scope">
-                <img :src="this.items[scope.$index].imgurl" style="width: 50px">
+                <img :src="this.items[scope.$index].image1" style="width: 50px">
                 <input type="file" @change="hadleImage($event, scope.$index )" />
             </template>
         </el-table-column>
@@ -76,24 +76,36 @@
         },
 
         methods:{
-            hadleImage(e, i){
-                console.log("itemUpdateBatch.vue = > handleImage", e, i)
-                this.items[i].image = e.target.files[0]
+            hadleImage(e, idx){
+                // e 실제 파일 정보
+                // idx 위치 정보
+                console.log("itemUpdateBatch.vue = > handleImage", e, idx)
+                // image > 수정 전의 이미지
+                // imageData > 수정하는 이미지 파일(데이터)
+                // image1 > 수정하는 이미지 미리보기 URL
+                if(e.target.files.length > 0){ //첨부함
+                    this.items[idx].imageData = e.target.files[0];
+                    this.items[idx].image1 = URL.createObjectURL(e.target.files[0]);
+                }
+                else{ //첨부하지 않음
+                    this.items[idx].imageData = null;
+                    this.items[idx].image1 = this.items[idx].image
+                }
             },
 
             async insertDB(){
                 const url = 'item/updatebatch';
+                const headers = {"Content-Type": "multipart/form-data"};
                 const body = new FormData();
-                for(let i = 0; this.items.length > i; i++){
-                    body.append("code", this.items[i]._id)
-                    body.append("name", this.items[i].name)
-                    body.append("content", this.items[i].content)
-                    body.append("price", this.items[i].price)
-                    body.append("quantity", this.items[i].quantity)
-                    body.append("file", this.items[i].img)
+                for(let tmp of this.items){
+                    body.append( "code", tmp._id );
+                    body.append( "name", tmp.name );
+                    body.append( "content", tmp.content );
+                    body.append( "price", tmp.price );
+                    body.append( "quantity", tmp.quantity );
+                    body.append( "file", tmp.imageData );
                 }
                 
-                const headers = {"content-Type": "multipart/form-data"};
                 const response = await this.axios.put(
                     url, body, {headers : headers}
                 )
@@ -101,7 +113,6 @@
                     alert('수정 완료되었습니다.')
                     this.$router.push({name: 'Seller'})
                 }
-                console.log(response)
             },
 
             async handleData(){
@@ -121,7 +132,12 @@
            
                 console.log("Seller.vue => editSomeItem()", response)
                 if(response.data.status === 200){
-                    this.items = response.data.result                
+                    this.items = response.data.result
+                    // 미리보기를 위한 새로운 image1키 추가
+                    for(let tmp of this.items){
+                        tmp.image1 = tmp.image;
+                        tmp.imageData = null;
+                    }                
                 }
             },
             toSeller(){
