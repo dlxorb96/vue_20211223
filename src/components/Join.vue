@@ -10,7 +10,8 @@
                     margin-right: 20px;"
                     ref="userid">
                     </el-input>
-                    <el-button type="primary">중복확인</el-button>
+                    <el-button @click="handleIDCheck" type="primary">중복확인</el-button>
+                    <span style="margin-left: 10px;">{{alertIDChk}}</span>
 
                 </el-form-item>
 
@@ -120,20 +121,45 @@
                     date : '1',
                     email : '1',
                     email2 : '1',
-                    email3 : '',
                     type : ['Html'],
                     gender : '2',
                     desc : '1',
                     chk : '',
                 },
                 emailOption : ['naver.com', 'gamil.com', 'hanmail.net'],
-                typeOption : ["HTML", "CSS", "JAVASCRIOT", "VUE"]
+                typeOption : ["HTML", "CSS", "JAVASCRIOT", "VUE"],
+                alertIDChk: '중복 확인을 눌러주세요',
+                idcheck : false
             }
         },
         methods:{
-            async join(){
+            async handleIDCheck(){
+                
 
-            
+                if(this.member.userid === ''){
+                    alert('아이디를 입력해주세요')
+                    this.$refs.userid.focus();
+                    return false;
+                }
+                const url = `/member/idcheck?uid=${this.member.userid}`;
+                const headers = {"Content-Type" : "application/json"}
+                const response = await this.axios.get(url, {headers : headers})
+                console.log("join.vue => handleIDCheck()", response);
+                if(response.data.result === 0){
+                    this.alertIDChk = '사용 가능한 아이디입니다.';
+                    this.idcheck = true;
+                }
+                else if(response.data.result === 1){
+                    this.alertIDChk = '사용할 수 없는 아이디입니다.'
+                    this.idcheck = false;
+                }
+            },
+
+            async join(){
+                if(this.idcheck === false){
+                    alert('아이디 중복확인하세요.');
+                    return false;
+                }
 
                 if(this.member.userid ===''){
                     alert('아이디를 입력해주세요')
@@ -183,13 +209,12 @@
                     return false;
                 }
                 
-                // this.$router.push({
-                //     name:'Home'
-                    
-                // })
-                sessionStorage.setItem("activeIndex", 1);
-                this.aa()
 
+                sessionStorage.setItem("activeIndex", 1);
+                await this.aa()
+                // this.$router.push({
+                //     name:'Home'  
+                // })
             },
             async aa(){
                 const url = '/member/insert';
@@ -198,6 +223,7 @@
                 const body = {
                     uid: this.member.userid,
                     upw: this.member.uesrpw,
+                    uage: this.member.age,
                     ubirth: this.member.date,
                     uemail: String(this.member.email)+ '@' + String(this.member.email2),
                     ucheck: this.member.chk,
@@ -207,14 +233,18 @@
                 const response = await this.axios.post(
                     url, body, {headers: headers}
                 );
-                if(response.status === 200){
+                if(response.data.status === 200){
                     console.log("success")
+                    alert('환영합니다')
+                    this.$router.push({
+                    name:'Home'  
+                    })
                 }
-                if(response.stauts ===0){
+                else if(response.data.status ===0 || response.data.status === -1){
                     alert('다시 확인')
                 }
                 console.log(response)
-                alert('환영합니다')
+                
             },
 
 

@@ -90,7 +90,7 @@ export default {
       // .path를 하면 파라미터로 넘어온 path가 아니라 위에 존재하는 path를 찾는다
       
       // this.$refs[path].$el.click();
-
+      //클릭방식으로 메뉴 활성화
       if(typeof this.$refs[path] !== 'undefined'){
         this.$refs[path].$el.click();
       }
