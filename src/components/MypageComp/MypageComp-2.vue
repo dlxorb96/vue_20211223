@@ -5,7 +5,7 @@
             <el-form  label-width="120px">
             <el-form-item :inline = true label="현재 암호">
                 <el-input placeholder="암호" 
-                v-model="member.pw" 
+                v-model="userpw" 
                 style="display: inline-block; width: 200px;
                 margin-right: 20px;"
                 type="password"
@@ -16,7 +16,7 @@
             
             <el-form-item label="바꿀 암호">
                 <el-input
-                    v-model= "member.pwchk"
+                    v-model= "userpw2"
                     placeholder="바꿀 암호 "
                     type="password"
                     style="display: inline-block; width: 200px;
@@ -26,7 +26,7 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" @click= "handleNameChange">변경하기</el-button>
+                <el-button type="primary" @click= "handlePasswordChange">변경하기</el-button>
                 
             </el-form-item>
             </el-form>
@@ -36,24 +36,46 @@
 
 <script>
     export default {
-        created(){
-            
-        },
-
         data(){
             return{
-                member:{
-                    pw : '',
-                    pwchk : ''
-                    }
+                userpw:'',
+                userpw2:'',
+                token : sessionStorage.getItem('TOKEN')
             }
         },
         methods:{
-            handleNameChange(){
-                alert('변경이 완료되었습니다.')
-                this.$router.push({name:'Home'})
+            async handlePasswordChange(){
+                if(this.uerspw ===''){
+                    alert('암호를 입력하세요')
+                }
+                if(this.uerspw2 ===''){
+                    alert('암호확인을 입력하세요')
+                }
+                if(this.uerspw ===this.uerspw2){
+                    alert('비밀번호가 다릅니다.')
+                }
+
+                console.log("MypageComp-2 => handlePasswordChange",1);
+                const url = '/member/mypage?menu=2';
+                const headers = {"Content-Type": "application/json", 
+                token : this.token};
+                const body = {
+                    userpw: this.userpw,
+                    userpw2 : this.userpw2
+                }
+                const response = await this.axios.put(
+                    url, body, {headers: headers});
+                // 변경 완료
+                if(response.data.status === 200){
+                    alert('변경 완료되었습니다')
+                }
+                // 변경 실패
+                else if(response.data.status === 0){
+                    alert('비밀번호를 확인해주세요')
+                }
             }
         }
+
     }
 </script>
 
