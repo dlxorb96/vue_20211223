@@ -59,16 +59,6 @@
             }
         },
         methods:{
-            
-          
-            
-            handleLeave(){
-                console.log('MypageComp-3.vue => handleLeave')
-                alert('회원 탈퇴되었습니다')
-                sessionStorage.removeItem("TOKEN")
-                this.$emit('changeLogged1')
-                this.$router.push({name:'Home'})
-            }
         }
     }
 </script>

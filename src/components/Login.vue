@@ -99,9 +99,13 @@
                     sessionStorage.setItem("TOKEN", response.data.result.token)
 
                     //2. 홈으로 이동한다.
-                    this.store.commit('setMenu', 'home')
+                    // this.store.commit('setMenu', 'home')
+                    // this.$router.push({name:"home"})
+                    //원래 이건데 App.vue에 subscribe부분 있음
+                    //그 부분은 모든 곳에서 실행 되는 거임.
 
                     //3. App.vue에 메뉴의 상태를 통지함
+                    this.store.commit('setMenu', 'home')
                 }
                 else if(response.data.status === 0){
                     alert('아이디 비밀번호를 확인해주세요');

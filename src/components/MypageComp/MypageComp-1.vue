@@ -105,9 +105,10 @@
                 console.log(response)
                 if(response.data.status ===200){
                     alert('변경이 완료되었습니다.');
+                    //주소 변경없이 내용만 다시 갱신
+                    this.handleData()
                     // this.$router.push({name:'Home'})
                 }
-
 
 
                 //get(조회), post(추가), put(수정), delete(삭제)

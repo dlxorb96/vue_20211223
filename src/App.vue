@@ -14,6 +14,7 @@
           <el-menu-item v-show="!logged" ref="join" index="join">회원가입</el-menu-item>
           <el-menu-item v-show="logged" ref="board" index="board">게시판</el-menu-item>
           <el-menu-item ref="seller" index="seller">판매자</el-menu-item>
+          <el-menu-item v-show="logged" ref="admin" index="admin">관리자</el-menu-item>
           <!-- <el-menu-item ref="admin" index="admin">관리자</el-menu-item> -->
           <!-- v-if = 태그를 생성시키지 않음 빈도수가 낮은거 -->
           <!-- v-show = 태그생성, 숨김으로 빈도수가 높은거 -->

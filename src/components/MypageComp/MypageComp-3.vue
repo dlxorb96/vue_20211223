@@ -49,7 +49,7 @@
 
             //회원 탈퇴 클릭시
             async handleLeave(){
-                if(this.uerspw ===''){
+                if(this.userpw ===''){
                     alert('암호를 입력하세요')
                     return false
                 }
@@ -62,24 +62,29 @@
                     return false
                 }
                 console.log("MypageComp-3 => handleLeave",1);
-                const url = '/member/mypage?menu=3';
-                const headers = {"Content-Type":"application/json",
-                token : this.token};
-                const body = {userpw : this.userpw};
-                const response = await this.axios.put(
-                    url, body, {headers:headers}
-                );
-                console.log(response)
-                //회원탈퇴 성공
-                if(response.data.status ===200){
-                    alert('회원탈퇴 성공');
-                    sessionStorage.removeItem("TOKEN")
-                    this.store.commit('setMenu', 'home')
-                }
+                const ret = confirm('정말 탈퇴하시겠습니까?')
+                if(ret){
+                    const url = '/member/mypage?menu=3';
+                    const headers = {"Content-Type":"application/json",
+                    token : this.token};
+                    const body = {userpw : this.userpw};
+                    const response = await this.axios.put(
+                        url, body, {headers:headers}
+                    );
+                    console.log(response)
+                    //회원탈퇴 성공
+                    if(response.data.status ===200){
+                        alert('회원탈퇴 성공');
+                        // this.$router.push({name: "Logout"})
+                        sessionStorage.removeItem("TOKEN")
+                        this.store.commit('setMenu', 'home')
+                    }
 
-                //회원 탈토ㅣ실패
-                else if (response.data.status ===0){
-                    alert('회원탈퇴 실패')
+                    //회원 탈토ㅣ실패
+                    else if (response.data.status ===0){
+                        alert('회원탈퇴 실패')
+                    }
+                    
                 }
                 
             }

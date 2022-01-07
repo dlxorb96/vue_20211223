@@ -109,10 +109,12 @@
 </template>
 
 <script>
+    import {useStore} from 'vuex'
     export default {
         
         data(){
             return{
+                store : useStore(),
                 member: {
                     userid : '1',
                     uesrpw : '1',
@@ -236,9 +238,8 @@
                 if(response.data.status === 200){
                     console.log("success")
                     alert('환영합니다')
-                    this.$router.push({
-                    name:'Home'  
-                    })
+                    this.store.commit('setMenu', 'home')
+                    
                 }
                 else if(response.data.status ===0 || response.data.status === -1){
                     alert('다시 확인')

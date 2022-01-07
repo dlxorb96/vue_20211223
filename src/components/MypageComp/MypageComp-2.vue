@@ -45,15 +45,15 @@
         },
         methods:{
             async handlePasswordChange(){
-                if(this.uerspw ===''){
-                    alert('암호를 입력하세요')
+                if(this.userpw ===''){
+                    alert('현재 암호를 입력하세요')
+                    return false;
                 }
-                if(this.uerspw2 ===''){
-                    alert('암호확인을 입력하세요')
+                if(this.userpw2 ===''){
+                    alert('바꿀 암호를 입력하세요')
+                    return false;
                 }
-                if(this.uerspw ===this.uerspw2){
-                    alert('비밀번호가 다릅니다.')
-                }
+                
 
                 console.log("MypageComp-2 => handlePasswordChange",1);
                 const url = '/member/mypage?menu=2';
@@ -68,6 +68,8 @@
                 // 변경 완료
                 if(response.data.status === 200){
                     alert('변경 완료되었습니다')
+                    this.userpw = '';
+                    this.userpw2 = '';
                 }
                 // 변경 실패
                 else if(response.data.status === 0){
